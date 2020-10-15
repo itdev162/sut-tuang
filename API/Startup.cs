@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using MediatR;
+using Application.Posts;
 
 namespace API
 {
@@ -31,6 +33,7 @@ namespace API
         {
             //services.AddControllers();
 
+            services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddCors(opt =>
             {
                opt.AddPolicy(CorsPolicy, policybuilder =>
