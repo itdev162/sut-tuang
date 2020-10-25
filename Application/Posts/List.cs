@@ -42,19 +42,19 @@ namespace Application.Posts
 
             public Handler(DataContext context) => this.context = context;
             
-            public Task<List<Post>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<List<Post>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return this.context.Posts.ToListAsync();
+                return await this.context.Posts.ToListAsync();
             }
 
-            public Task<Post> Handle(GetById request, CancellationToken cancellationToken)
+            public async Task<Post> Handle(GetById request, CancellationToken cancellationToken)
             {
                 // return this.context.Posts.FirstOrDefaultAsync(p => p.Id == request.Id);
                 // return Task.FromResult(new Post{Title = "Test", Body = "Test"});
-                return this.context.Posts.FindAsync(request.Id).AsTask();
+                return await this.context.Posts.FindAsync(request.Id).AsTask();
             }
 
-            public Task<Post> Handle(CreatePost request, CancellationToken cancellationToken)
+            public async Task<Post> Handle(CreatePost request, CancellationToken cancellationToken)
             {
                 var post = new Post {
                     Id = request.Id,
@@ -63,21 +63,21 @@ namespace Application.Posts
                     Date = request.Date
                 };
 
-                context.Posts.AddAsync(post);
+                await context.Posts.AddAsync(post);
 
                 try
                 {
-                    context.SaveChangesAsync();
-                    return Task.FromResult(post);
+                    await context.SaveChangesAsync();
+                    return await Task.FromResult(post);
                 }
                 catch (Exception ex)
                 {
-                    return Task.FromResult(new Post{});
+                    return await Task.FromResult(new Post { });
                 }
 
             }
 
-            public Task<Post> Handle(UpdatePost request, CancellationToken cancellationToken)
+            public async Task<Post> Handle(UpdatePost request, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -89,13 +89,13 @@ namespace Application.Posts
                     post.Body = request.Body != null ? request.Body : post.Body;
                     post.Date = request.Date != null ? request.Date : post.Date;
 
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
 
-                    return result;
+                    return await result;
                 }
                 catch (Exception ex)
                 {
-                    return Task.FromResult(new Post{});
+                    return await Task.FromResult(new Post { });
                 }
             } 
             
