@@ -22,6 +22,7 @@ namespace Application.Posts
             public string Title {get;set;}
             public string Body {get;set;}
             public DateTime Date {get;set;}
+            
             // private DateTime Date = DateTime.Now;
         }
 
@@ -70,7 +71,7 @@ namespace Application.Posts
                     await context.SaveChangesAsync();
                     return await Task.FromResult(post);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return await Task.FromResult(new Post { });
                 }
@@ -93,9 +94,9 @@ namespace Application.Posts
 
                     return await result;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return await Task.FromResult(new Post { });
+                    return await Task.FromResult(new Post {});
                 }
             } 
             

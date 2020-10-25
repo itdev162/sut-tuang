@@ -5,7 +5,6 @@ using Application.Posts;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
 
 namespace API.Controllers
 {
@@ -37,9 +36,7 @@ namespace API.Controllers
         public async Task<ActionResult<Post>> GetById(Guid id)
         {
             // return await this.mediator.Send(new List.GetById{Id = id});
-            var result = await this.mediator.Send(new List.GetById{Id = id});
-
-            return result;
+            return await this.mediator.Send(new List.GetById{Id = id});;
         }
 
         /// <summary>
