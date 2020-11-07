@@ -1,8 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import PostList from './components/PostList/PostList';
 import Post from './components/Post/Post';
+import CreatePost from './components/Post/CreatePost';
+import EditPost from './components/Post/EditPost';
 import './App.css';
 
 class App extends React.Component {
@@ -39,9 +41,34 @@ class App extends React.Component {
   }
 
   viewPost = (post) => {
-    console.log(`view ${post.title}`);
     this.setState({ 
       post: post 
+    });
+  }
+
+  editPost = (post) => {
+    this.setState({
+      post: post
+    });
+  }
+
+  onPostCreated = (post) => {
+    const newPosts = [...this.state.posts, post];
+
+    this.setState({
+      posts: newPosts
+    });
+  }
+
+  onPostUpdated = (post) => {
+    console.log('updated post: ', post);
+    const newPosts = [...this.state.posts];
+    const index = newPosts.findIndex(p => p.id === post.id);
+
+    newPosts[index] = post;
+
+    this.setState({
+      posts: newPosts
     });
   }
 
@@ -50,19 +77,28 @@ class App extends React.Component {
     return (
       <Router>
         <div className="App">
-          <header className="App-Header">
-            BlogBox
-          </header>
-          <main className="App-Content">
+          <header className="App-header">BlogBox</header>
+          <nav>
+            <Link to="/">Home</Link>
+            <Link to="/new-post">New Post</Link>
+          </nav>
+          <main className="App-content">
             <Switch>
               <Route exact path="/">
                 <PostList
                   posts={posts}
                   clickPost={this.viewPost}
-                  deletePost={this.deletePost}/>
+                  deletePost={this.deletePost}
+                  editPost={this.editPost}/>
               </Route>
               <Route path="/posts/:postId">
                 <Post post={post}/>
+              </Route>
+              <Route path="/new-post">
+                <CreatePost onPostCreated={this.onPostCreated}/>
+              </Route>
+              <Route path="/edit-post/:postId">
+                <EditPost post={post} onPostUpdated={this.onPostUpdated}/>
               </Route>
             </Switch>
           </main>
