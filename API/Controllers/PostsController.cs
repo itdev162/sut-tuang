@@ -61,5 +61,15 @@ namespace API.Controllers
         {
             return await this.mediator.Send(new List.UpdatePost{Id = p.Id, Title = p.Title, Body = p.Body, Date = p.Date});
         }
+
+        /// <summary>
+        /// DELETE api/post/[id]
+        /// </summary>
+        /// <param name="id">Post id</param>
+        /// <returns>True, if successful</returns>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Post>> DeletePost(Guid id){
+            return await this.mediator.Send(new List.DeletePost{Id = id});
+        }
     }
 }
