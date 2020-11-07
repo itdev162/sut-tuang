@@ -14,7 +14,7 @@ namespace Application.Posts
         public class Query : IRequest<List<Post>> { }
 
         public class GetById : IRequest<Post> {
-            public Guid Id { get; set;}
+            public Guid Id {get;set;}
         }
 
         public class CreatePost : IRequest<Post> {
@@ -33,11 +33,16 @@ namespace Application.Posts
             public DateTime Date {get;set;}
         }
 
+        public class DeletePost : IRequest<Post> {
+            public Guid Id {get;set;}
+        }
+
         public class Handler : 
             IRequestHandler<Query, List<Post>>, 
             IRequestHandler<GetById, Post>,
             IRequestHandler<CreatePost, Post>,
-            IRequestHandler<UpdatePost, Post>
+            IRequestHandler<UpdatePost, Post>,
+            IRequestHandler<DeletePost, Post>
         {
             private readonly DataContext context;
 
@@ -96,6 +101,19 @@ namespace Application.Posts
                 }
                 catch (Exception)
                 {
+                    return await Task.FromResult(new Post {});
+                }
+            }
+
+            public async Task<Post> Handle(DeletePost request, CancellationToken cancellationToken)
+            {
+                var post = this.context.Posts.FindAsync(request.Id).AsTask();
+
+                this.context.Posts.Remove(post.Result);
+                
+                if(await this.context.SaveChangesAsync() > 0){
+                    return await post;
+                }else{
                     return await Task.FromResult(new Post {});
                 }
             } 
